@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Examen{% endblock %}
+
+{% block body %}
+    <h1>Examen index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Libelle</th>
+                <th>DateExamen</th>
+                <th>Note</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for examan in examens %}
+            <tr>
+                <td>{{ examan.id }}</td>
+                <td>{{ examan.Libelle }}</td>
+                <td>{{ examan.DateExamen ? examan.DateExamen|date('Y-m-d') : '' }}</td>
+                <td>{{ examan.Note }}</td>
+                <td>
+                    <a href="{{ path('app_examen_show', {'id': examan.id}) }}">show</a>
+                    <a href="{{ path('app_examen_edit', {'id': examan.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="5">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_examen_new') }}">Create new</a>
+{% endblock %}
