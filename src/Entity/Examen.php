@@ -23,6 +23,12 @@ class Examen
     #[ORM\Column]
     private ?float $Note = null;
 
+    #[ORM\ManyToOne(inversedBy: 'examens')]
+    private ?User $user = null;
+
+    #[ORM\ManyToOne(inversedBy: 'examens')]
+    private ?Cours $cours = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -60,6 +66,30 @@ class Examen
     public function setNote(float $Note): static
     {
         $this->Note = $Note;
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): static
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    public function getCours(): ?Cours
+    {
+        return $this->cours;
+    }
+
+    public function setCours(?Cours $cours): static
+    {
+        $this->cours = $cours;
 
         return $this;
     }
