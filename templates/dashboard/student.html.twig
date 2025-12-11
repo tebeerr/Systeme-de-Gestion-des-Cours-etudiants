@@ -1,0 +1,188 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Student Dashboard{% endblock %}
+
+{% block stylesheets %}
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .dashboard-header {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        .dashboard-header h1 {
+            margin: 0;
+            color: #333;
+            font-size: 2.5em;
+        }
+        .section {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        .section h2 {
+            color: #333;
+            margin-bottom: 20px;
+            border-bottom: 3px solid #f5576c;
+            padding-bottom: 10px;
+        }
+        .course-card, .exam-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border-left: 4px solid #f5576c;
+        }
+        .course-card h3, .exam-card h3 {
+            margin: 0 0 10px 0;
+            color: #f5576c;
+        }
+        .course-card p, .exam-card p {
+            margin: 5px 0;
+            color: #666;
+        }
+        .badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.85em;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        .badge-success {
+            background: #28a745;
+            color: white;
+        }
+        .badge-warning {
+            background: #ffc107;
+            color: #333;
+        }
+        .badge-info {
+            background: #17a2b8;
+            color: white;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+        }
+        .empty-state::before {
+            content: "📭";
+            font-size: 4em;
+            display: block;
+            margin-bottom: 20px;
+        }
+        .btn-logout {
+            display: inline-block;
+            padding: 10px 20px;
+            background: #dc3545;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+        .btn-logout:hover {
+            background: #c82333;
+            color: white;
+        }
+        .note-display {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #f5576c;
+            margin-top: 10px;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+<div class="dashboard-container">
+    <div class="dashboard-header">
+        <h1>🎓 Student Dashboard</h1>
+        <p>Welcome, {{ app.user.email }}! Here are your courses and exams.</p>
+        <a href="{{ path('app_logout') }}" class="btn-logout">Logout</a>
+    </div>
+
+    <div class="section">
+        <h2>📚 My Courses</h2>
+        {% if courses|length > 0 %}
+            {% for course in courses %}
+                <div class="course-card">
+                    <h3>{{ course.Libelle }}</h3>
+                    <p><strong>Description:</strong> {{ course.Description }}</p>
+                    <p><strong>Start Date:</strong> {{ course.DateDebut|date('Y-m-d') }}</p>
+                    <p><strong>End Date:</strong> {{ course.DateFin|date('Y-m-d') }}</p>
+                    {% if course.classe %}
+                        <p><strong>Class:</strong> {{ course.classe.Libelle }}</p>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="empty-state">
+                <p>No courses enrolled yet.</p>
+            </div>
+        {% endif %}
+    </div>
+
+    <div class="section">
+        <h2>📝 My Exams</h2>
+        {% if exams|length > 0 %}
+            {% for exam in exams %}
+                <div class="exam-card">
+                    <h3>{{ exam.Libelle }}</h3>
+                    <p><strong>Date:</strong> {{ exam.DateExamen|date('Y-m-d') }}</p>
+                    {% if exam.Note is not null %}
+                        <div class="note-display">Grade: {{ exam.Note }}/20</div>
+                    {% else %}
+                        <p><span class="badge badge-warning">Grade pending</span></p>
+                    {% endif %}
+                    {% if exam.cours %}
+                        <p><strong>Course:</strong> {{ exam.cours.Libelle }}</p>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="empty-state">
+                <p>No exams found.</p>
+            </div>
+        {% endif %}
+    </div>
+
+    <div class="section">
+        <h2>📋 My Registrations</h2>
+        {% if inscriptions|length > 0 %}
+            {% for inscription in inscriptions %}
+                <div class="course-card">
+                    <h3>Registration #{{ inscription.id }}</h3>
+                    <p><strong>Date:</strong> {{ inscription.Date|date('Y-m-d') }}</p>
+                    <p><strong>Status:</strong> 
+                        <span class="badge {% if inscription.Status == 'Active' %}badge-success{% elseif inscription.Status == 'Pending' %}badge-warning{% else %}badge-info{% endif %}">
+                            {{ inscription.Status }}
+                        </span>
+                    </p>
+                    {% if inscription.classe %}
+                        <p><strong>Class:</strong> {{ inscription.classe.Libelle }}</p>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="empty-state">
+                <p>No registrations found.</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+

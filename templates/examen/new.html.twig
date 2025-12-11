@@ -1,11 +1,135 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}New Examen{% endblock %}
+{% block title %}New Exam{% endblock %}
+
+{% block stylesheets %}
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .form-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .form-container h1 {
+            color: #333;
+            margin-bottom: 30px;
+            text-align: center;
+            font-size: 2.5em;
+        }
+        .form-group {
+            margin-bottom: 25px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+            font-size: 1.1em;
+        }
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+            box-sizing: border-box;
+        }
+        .form-control:focus {
+            outline: none;
+            border-color: #f5576c;
+            box-shadow: 0 0 0 3px rgba(245, 87, 108, 0.1);
+        }
+        .btn-submit {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            width: 100%;
+            margin-top: 10px;
+        }
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(245, 87, 108, 0.3);
+        }
+        .btn-back {
+            display: inline-block;
+            margin-top: 20px;
+            color: #f5576c;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+        .btn-back:hover {
+            color: #f093fb;
+        }
+        .form-errors {
+            background: #fee;
+            color: #c33;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+    </style>
+{% endblock %}
 
 {% block body %}
-    <h1>Create new Examen</h1>
+<div class="form-container">
+    <h1>📝 Create New Exam</h1>
 
-    {{ include('examen/_form.html.twig') }}
+    {% if form.vars.errors|length > 0 %}
+        <div class="form-errors">
+            {{ form_errors(form) }}
+        </div>
+    {% endif %}
 
-    <a href="{{ path('app_examen_index') }}">back to list</a>
+    {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+        <div class="form-group">
+            {{ form_label(form.Libelle) }}
+            {{ form_widget(form.Libelle) }}
+            {{ form_errors(form.Libelle) }}
+        </div>
+        
+        <div class="form-group">
+            {{ form_label(form.DateExamen) }}
+            {{ form_widget(form.DateExamen) }}
+            {{ form_errors(form.DateExamen) }}
+        </div>
+        
+        <div class="form-group">
+            {{ form_label(form.Note) }}
+            {{ form_widget(form.Note) }}
+            {{ form_errors(form.Note) }}
+        </div>
+        
+        <div class="form-group">
+            {{ form_label(form.cours) }}
+            {{ form_widget(form.cours) }}
+            {{ form_errors(form.cours) }}
+        </div>
+        
+        <div class="form-group">
+            {{ form_label(form.user) }}
+            {{ form_widget(form.user) }}
+            {{ form_errors(form.user) }}
+        </div>
+
+        <button type="submit" class="btn-submit">Create Exam</button>
+    {{ form_end(form) }}
+
+    <a href="{{ path('app_examen_index') }}" class="btn-back">← Back to Exams List</a>
+</div>
 {% endblock %}

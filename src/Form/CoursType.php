@@ -14,13 +14,30 @@ class CoursType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('Libelle')
-            ->add('Description')
-            ->add('DateDebut')
-            ->add('DateFin')
+            ->add('Libelle', null, [
+                'label' => 'Course Title',
+                'attr' => ['class' => 'form-control', 'placeholder' => 'Enter course title']
+            ])
+            ->add('Description', null, [
+                'label' => 'Description',
+                'attr' => ['class' => 'form-control', 'placeholder' => 'Enter course description', 'rows' => 4]
+            ])
+            ->add('DateDebut', null, [
+                'label' => 'Start Date',
+                'widget' => 'single_text',
+                'attr' => ['class' => 'form-control']
+            ])
+            ->add('DateFin', null, [
+                'label' => 'End Date',
+                'widget' => 'single_text',
+                'attr' => ['class' => 'form-control']
+            ])
             ->add('classe', EntityType::class, [
                 'class' => Classe::class,
-                'choice_label' => 'id',
+                'choice_label' => 'Libelle',
+                'label' => 'Class',
+                'placeholder' => 'Select a class',
+                'attr' => ['class' => 'form-control']
             ])
         ;
     }

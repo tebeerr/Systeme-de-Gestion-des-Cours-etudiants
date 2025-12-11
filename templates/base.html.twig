@@ -12,6 +12,26 @@
         {% endblock %}
     </head>
     <body>
+        {% if app.user %}
+            <nav style="background: #333; padding: 15px; margin-bottom: 20px;">
+                <div style="max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center;">
+                    <div style="color: white; font-weight: bold;">
+                        Course Management System
+                    </div>
+                    <div style="display: flex; gap: 20px; align-items: center;">
+                        {% if 'ROLE_ADMIN' in app.user.roles %}
+                            <a href="{{ path('app_admin_dashboard') }}" style="color: white; text-decoration: none;">Admin Dashboard</a>
+                        {% elseif 'ROLE_PROFESSOR' in app.user.roles %}
+                            <a href="{{ path('app_professor_dashboard') }}" style="color: white; text-decoration: none;">Professor Dashboard</a>
+                        {% else %}
+                            <a href="{{ path('app_student_dashboard') }}" style="color: white; text-decoration: none;">Student Dashboard</a>
+                        {% endif %}
+                        <span style="color: #ccc;">{{ app.user.email }}</span>
+                        <a href="{{ path('app_logout') }}" style="color: white; text-decoration: none; background: #dc3545; padding: 8px 15px; border-radius: 5px;">Logout</a>
+                    </div>
+                </div>
+            </nav>
+        {% endif %}
         {% block body %}{% endblock %}
     </body>
 </html>

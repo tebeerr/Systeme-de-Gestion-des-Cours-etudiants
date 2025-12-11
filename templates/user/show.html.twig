@@ -1,0 +1,110 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}User Details{% endblock %}
+
+{% block stylesheets %}
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .container h1 {
+            color: #333;
+            margin-bottom: 30px;
+        }
+        .info-group {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 5px;
+        }
+        .info-group label {
+            font-weight: 600;
+            color: #667eea;
+            display: block;
+            margin-bottom: 5px;
+        }
+        .info-group span {
+            color: #333;
+            font-size: 1.1em;
+        }
+        .badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.85em;
+            font-weight: bold;
+        }
+        .badge-admin {
+            background: #dc3545;
+            color: white;
+        }
+        .badge-professor {
+            background: #4facfe;
+            color: white;
+        }
+        .badge-student {
+            background: #28a745;
+            color: white;
+        }
+        .btn-back {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        .btn-back:hover {
+            background: #764ba2;
+            color: white;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+<div class="container">
+    <h1>User Details</h1>
+
+    <div class="info-group">
+        <label>Email:</label>
+        <span>{{ user.email }}</span>
+    </div>
+
+    <div class="info-group">
+        <label>Roles:</label>
+        <div>
+            {% for role in user.roles %}
+                {% if role == 'ROLE_ADMIN' %}
+                    <span class="badge badge-admin">Admin</span>
+                {% elseif role == 'ROLE_PROFESSOR' %}
+                    <span class="badge badge-professor">Professor</span>
+                {% elseif role == 'ROLE_STUDENT' %}
+                    <span class="badge badge-student">Student</span>
+                {% else %}
+                    <span class="badge">{{ role }}</span>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="info-group">
+        <label>User ID:</label>
+        <span>{{ user.id }}</span>
+    </div>
+
+    <a href="{{ path('app_user_index') }}" class="btn-back">← Back to Users List</a>
+</div>
+{% endblock %}
+
