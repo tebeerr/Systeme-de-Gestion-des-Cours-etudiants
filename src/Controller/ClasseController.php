@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Classe;
+use App\Form\ClasseType;
 use App\Repository\ClasseRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -25,7 +26,7 @@ final class ClasseController extends AbstractController
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $classe = new Classe();
-        $form = $this->createForm(Classe1Type::class, $classe);
+        $form = $this->createForm(ClasseType::class, $classe);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -52,7 +53,7 @@ final class ClasseController extends AbstractController
     #[Route('/{id}/edit', name: 'app_classe_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Classe $classe, EntityManagerInterface $entityManager): Response
     {
-        $form = $this->createForm(Classe1Type::class, $classe);
+        $form = $this->createForm(ClasseType::class, $classe);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
