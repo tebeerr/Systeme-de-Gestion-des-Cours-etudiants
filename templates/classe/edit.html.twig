@@ -1,13 +1,134 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Edit Classe{% endblock %}
+{% block title %}Edit Class{% endblock %}
+
+{% block stylesheets %}
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .form-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .form-container h1 {
+            color: #333;
+            margin-bottom: 30px;
+            text-align: center;
+            font-size: 2.5em;
+        }
+        .form-group {
+            margin-bottom: 25px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+            font-size: 1.1em;
+        }
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+            box-sizing: border-box;
+        }
+        .form-control:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        .btn-submit {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            width: 100%;
+            margin-top: 10px;
+        }
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(102, 126, 234, 0.3);
+        }
+        .btn-back {
+            display: inline-block;
+            margin-top: 20px;
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+        .btn-back:hover {
+            color: #764ba2;
+        }
+        .form-errors {
+            background: #fee;
+            color: #c33;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .delete-section {
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 2px solid #e0e0e0;
+        }
+        .btn-delete {
+            background: #dc3545;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .btn-delete:hover {
+            background: #c82333;
+        }
+    </style>
+{% endblock %}
 
 {% block body %}
-    <h1>Edit Classe</h1>
+<div class="form-container">
+    <h1>✏️ Edit Class</h1>
 
-    {{ include('classe/_form.html.twig', {'button_label': 'Update'}) }}
+    {% if form.vars.errors|length > 0 %}
+        <div class="form-errors">
+            {{ form_errors(form) }}
+        </div>
+    {% endif %}
 
-    <a href="{{ path('app_classe_index') }}">back to list</a>
+    {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+        <div class="form-group">
+            {{ form_label(form.Libelle) }}
+            {{ form_widget(form.Libelle, {'attr': {'class': 'form-control', 'placeholder': 'Enter class name'}}) }}
+            {{ form_errors(form.Libelle) }}
+        </div>
 
-    {{ include('classe/_delete_form.html.twig') }}
+        <button type="submit" class="btn-submit">Update Class</button>
+    {{ form_end(form) }}
+
+    <div class="delete-section">
+        {{ include('classe/_delete_form.html.twig') }}
+    </div>
+
+    <a href="{{ path('app_classe_index') }}" class="btn-back">← Back to Classes List</a>
+</div>
 {% endblock %}

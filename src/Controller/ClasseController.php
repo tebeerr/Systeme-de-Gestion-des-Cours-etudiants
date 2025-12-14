@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Classe;
+use App\Entity\Inscription;
 use App\Form\ClasseType;
 use App\Repository\ClasseRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -31,7 +32,28 @@ final class ClasseController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->persist($classe);
+            
+            // Handle student selection - create Inscription records
+            $students = $form->get('students')->getData();
+            if ($students) {
+                foreach ($students as $student) {
+                    $inscription = new Inscription();
+                    $inscription->setClasse($classe);
+                    $inscription->setUser($student);
+                    $inscription->setDate(new \DateTime());
+                    $inscription->setStatus('Active');
+                    $entityManager->persist($inscription);
+                }
+            }
+            
             $entityManager->flush();
+
+            $studentCount = $students ? count($students) : 0;
+            $message = 'Class created successfully!';
+            if ($studentCount > 0) {
+                $message .= " {$studentCount} student(s) added to the class.";
+            }
+            $this->addFlash('success', $message);
 
             return $this->redirectToRoute('app_classe_index', [], Response::HTTP_SEE_OTHER);
         }
@@ -59,6 +81,8 @@ final class ClasseController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
+            $this->addFlash('success', 'Class updated successfully!');
+
             return $this->redirectToRoute('app_classe_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -74,6 +98,8 @@ final class ClasseController extends AbstractController
         if ($this->isCsrfTokenValid('delete'.$classe->getId(), $request->getPayload()->getString('_token'))) {
             $entityManager->remove($classe);
             $entityManager->flush();
+
+            $this->addFlash('success', 'Class deleted successfully!');
         }
 
         return $this->redirectToRoute('app_classe_index', [], Response::HTTP_SEE_OTHER);
