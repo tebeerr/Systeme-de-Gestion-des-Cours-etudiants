@@ -1,34 +1,254 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Examen{% endblock %}
+{% block title %}Exam Details{% endblock %}
+
+{% block stylesheets %}
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .exam-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: transform 0.3s;
+        }
+        .back-link:hover {
+            transform: translateX(-5px);
+            color: white;
+        }
+        .exam-card {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+        }
+        .exam-header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 30px;
+            border-bottom: 3px solid #4facfe;
+        }
+        .exam-header h1 {
+            margin: 0 0 15px 0;
+            color: #333;
+            font-size: 2.5em;
+        }
+        .exam-icon {
+            font-size: 4em;
+            margin-bottom: 15px;
+        }
+        .details-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        .detail-item {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 25px;
+            border-radius: 10px;
+            border-left: 5px solid #4facfe;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .detail-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+        }
+        .detail-label {
+            font-size: 0.9em;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        .detail-value {
+            font-size: 1.4em;
+            color: #333;
+            font-weight: 600;
+        }
+        .detail-icon {
+            font-size: 2em;
+            margin-bottom: 10px;
+            color: #4facfe;
+        }
+        .grade-display {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .grade-display h2 {
+            margin: 0 0 15px 0;
+            font-size: 1.3em;
+            opacity: 0.9;
+        }
+        .grade-number {
+            font-size: 4em;
+            font-weight: bold;
+            margin: 0;
+        }
+        .grade-max {
+            font-size: 1.5em;
+            opacity: 0.8;
+        }
+        .student-info {
+            background: #fff3cd;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 5px solid #ffc107;
+            margin-bottom: 30px;
+        }
+        .student-info h3 {
+            margin: 0 0 10px 0;
+            color: #856404;
+        }
+        .student-info p {
+            margin: 5px 0;
+            color: #856404;
+        }
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .btn {
+            padding: 15px 30px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1em;
+        }
+        .btn-edit {
+            background: #ffc107;
+            color: #333;
+        }
+        .btn-edit:hover {
+            background: #e0a800;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(255, 193, 7, 0.3);
+        }
+        .btn-delete {
+            background: #dc3545;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        .btn-delete:hover {
+            background: #c82333;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(220, 53, 69, 0.3);
+        }
+        .btn-back {
+            background: #6c757d;
+            color: white;
+        }
+        .btn-back:hover {
+            background: #5a6268;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(108, 117, 125, 0.3);
+            color: white;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9em;
+            margin-top: 10px;
+        }
+        .status-passed {
+            background: #d4edda;
+            color: #155724;
+        }
+        .status-failed {
+            background: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+{% endblock %}
 
 {% block body %}
-    <h1>Examen</h1>
+    <div class="exam-container">
+        <a href="{{ path('app_examen_index') }}" class="back-link">← Back to Exams List</a>
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ examan.id }}</td>
-            </tr>
-            <tr>
-                <th>Libelle</th>
-                <td>{{ examan.Libelle }}</td>
-            </tr>
-            <tr>
-                <th>DateExamen</th>
-                <td>{{ examan.DateExamen ? examan.DateExamen|date('Y-m-d') : '' }}</td>
-            </tr>
-            <tr>
-                <th>Note</th>
-                <td>{{ examan.Note }}</td>
-            </tr>
-        </tbody>
-    </table>
+        <div class="exam-card">
+            <div class="exam-header">
+                <div class="exam-icon">📝</div>
+                <h1>{{ examen.Libelle }}</h1>
+            </div>
 
-    <a href="{{ path('app_examen_index') }}">back to list</a>
+            <div class="details-grid">
+                <div class="detail-item">
+                    <div class="detail-icon">📅</div>
+                    <div class="detail-label">Exam Date</div>
+                    <div class="detail-value">
+                        {{ examen.DateExamen ? examen.DateExamen|date('F d, Y') : 'Not set' }}
+                    </div>
+                </div>
 
-    <a href="{{ path('app_examen_edit', {'id': examan.id}) }}">edit</a>
+                <div class="detail-item">
+                    <div class="detail-icon">📚</div>
+                    <div class="detail-label">Course</div>
+                    <div class="detail-value">
+                        {{ examen.cours ? examen.cours.libelle : 'No course assigned' }}
+                    </div>
+                </div>
+            </div>
 
-    {{ include('examen/_delete_form.html.twig') }}
+            {% if examen.user %}
+                <div class="student-info">
+                    <h3>👤 Student Information</h3>
+                    <p><strong>Name:</strong> {{ examen.user.nom|default('N/A') }} {{ examen.user.prenom|default('') }}</p>
+                    <p><strong>Email:</strong> {{ examen.user.email }}</p>
+                </div>
+            {% endif %}
+
+            <div class="grade-display">
+                <h2>Grade</h2>
+                <div class="grade-number">
+                    {{ examen.Note }}
+                    <span class="grade-max">/20</span>
+                </div>
+
+                {% if examen.Note >= 10 %}
+                    <div class="status-badge status-passed">✓ Passed</div>
+                {% else %}
+                    <div class="status-badge status-failed">✗ Failed</div>
+                {% endif %}
+            </div>
+
+            <div class="action-buttons">
+                <a href="{{ path('app_examen_edit', {'id': examen.id}) }}" class="btn btn-edit">
+                    ✏️ Edit Exam
+                </a>
+
+                <form method="post" action="{{ path('app_examen_delete', {'id': examen.id}) }}" onsubmit="return confirm('Are you sure you want to delete this exam?');" style="margin: 0;">
+                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ examen.id) }}">
+                    <button type="submit" class="btn btn-delete">🗑️ Delete Exam</button>
+                </form>
+
+                <a href="{{ path('app_examen_index') }}" class="btn btn-back">
+                    ← Back to List
+                </a>
+            </div>
+        </div>
+    </div>
 {% endblock %}
