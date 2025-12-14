@@ -13,10 +13,10 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/cours')]
+#[IsGranted('ROLE_PROFESSOR')] // ADMIN hérite automatiquement de ROLE_PROFESSOR
 final class CoursController extends AbstractController
 {
-    #[Route(name: 'app_cours_index', methods: ['GET'])]
-    #[IsGranted('ROLE_ADMIN or ROLE_PROFESSOR')]
+    #[Route('/', name: 'app_cours_index', methods: ['GET'])]
     public function index(CoursRepository $coursRepository): Response
     {
         return $this->render('cours/index.html.twig', [
@@ -25,7 +25,6 @@ final class CoursController extends AbstractController
     }
 
     #[Route('/new', name: 'app_cours_new', methods: ['GET', 'POST'])]
-    #[IsGranted('ROLE_ADMIN or ROLE_PROFESSOR')]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $cour = new Cours();
@@ -36,6 +35,8 @@ final class CoursController extends AbstractController
             $entityManager->persist($cour);
             $entityManager->flush();
 
+            $this->addFlash('success', 'Course created successfully!');
+
             return $this->redirectToRoute('app_cours_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -45,8 +46,7 @@ final class CoursController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_cours_show', methods: ['GET'])]
-    #[IsGranted('ROLE_ADMIN or ROLE_PROFESSOR')]
+    #[Route('/{id}', name: 'app_cours_show', methods: ['GET'], priority: -1)]
     public function show(Cours $cour): Response
     {
         return $this->render('cours/show.html.twig', [
@@ -55,7 +55,6 @@ final class CoursController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_cours_edit', methods: ['GET', 'POST'])]
-    #[IsGranted('ROLE_ADMIN or ROLE_PROFESSOR')]
     public function edit(Request $request, Cours $cour, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(CoursType::class, $cour);
@@ -63,6 +62,8 @@ final class CoursController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
+
+            $this->addFlash('success', 'Course updated successfully!');
 
             return $this->redirectToRoute('app_cours_index', [], Response::HTTP_SEE_OTHER);
         }
@@ -73,13 +74,14 @@ final class CoursController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_cours_delete', methods: ['POST'])]
-    #[IsGranted('ROLE_ADMIN or ROLE_PROFESSOR')]
+    #[Route('/{id}/delete', name: 'app_cours_delete', methods: ['POST'])]
     public function delete(Request $request, Cours $cour, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete'.$cour->getId(), $request->getPayload()->getString('_token'))) {
             $entityManager->remove($cour);
             $entityManager->flush();
+
+            $this->addFlash('success', 'Course deleted successfully!');
         }
 
         return $this->redirectToRoute('app_cours_index', [], Response::HTTP_SEE_OTHER);

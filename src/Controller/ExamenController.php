@@ -13,10 +13,10 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/examen')]
+#[IsGranted('ROLE_PROFESSOR')]
 final class ExamenController extends AbstractController
 {
-    #[Route(name: 'app_examen_index', methods: ['GET'])]
-    #[IsGranted('ROLE_ADMIN or ROLE_PROFESSOR')]
+    #[Route('/', name: 'app_examen_index', methods: ['GET'])]
     public function index(ExamenRepository $examenRepository): Response
     {
         return $this->render('examen/index.html.twig', [
@@ -25,61 +25,63 @@ final class ExamenController extends AbstractController
     }
 
     #[Route('/new', name: 'app_examen_new', methods: ['GET', 'POST'])]
-    #[IsGranted('ROLE_ADMIN or ROLE_PROFESSOR')]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
-        $examan = new Examen();
-        $form = $this->createForm(ExamenType::class, $examan);
+        $examen = new Examen();
+        $form = $this->createForm(ExamenType::class, $examen);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($examan);
+            $entityManager->persist($examen);
             $entityManager->flush();
+
+            $this->addFlash('success', 'Exam created successfully!');
 
             return $this->redirectToRoute('app_examen_index', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('examen/new.html.twig', [
-            'examan' => $examan,
+            'examen' => $examen,
             'form' => $form,
         ]);
     }
 
-    #[Route('/{id}', name: 'app_examen_show', methods: ['GET'])]
-    #[IsGranted('ROLE_ADMIN or ROLE_PROFESSOR')]
-    public function show(Examen $examan): Response
+    #[Route('/{id}', name: 'app_examen_show', methods: ['GET'], priority: -1)]
+    public function show(Examen $examen): Response
     {
         return $this->render('examen/show.html.twig', [
-            'examan' => $examan,
+            'examen' => $examen,
         ]);
     }
 
     #[Route('/{id}/edit', name: 'app_examen_edit', methods: ['GET', 'POST'])]
-    #[IsGranted('ROLE_ADMIN or ROLE_PROFESSOR')]
-    public function edit(Request $request, Examen $examan, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, Examen $examen, EntityManagerInterface $entityManager): Response
     {
-        $form = $this->createForm(ExamenType::class, $examan);
+        $form = $this->createForm(ExamenType::class, $examen);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
+            $this->addFlash('success', 'Exam updated successfully!');
+
             return $this->redirectToRoute('app_examen_index', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('examen/edit.html.twig', [
-            'examan' => $examan,
+            'examen' => $examen,
             'form' => $form,
         ]);
     }
 
-    #[Route('/{id}', name: 'app_examen_delete', methods: ['POST'])]
-    #[IsGranted('ROLE_ADMIN or ROLE_PROFESSOR')]
-    public function delete(Request $request, Examen $examan, EntityManagerInterface $entityManager): Response
+    #[Route('/{id}/delete', name: 'app_examen_delete', methods: ['POST'])]
+    public function delete(Request $request, Examen $examen, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$examan->getId(), $request->getPayload()->getString('_token'))) {
-            $entityManager->remove($examan);
+        if ($this->isCsrfTokenValid('delete'.$examen->getId(), $request->getPayload()->getString('_token'))) {
+            $entityManager->remove($examen);
             $entityManager->flush();
+
+            $this->addFlash('success', 'Exam deleted successfully!');
         }
 
         return $this->redirectToRoute('app_examen_index', [], Response::HTTP_SEE_OTHER);
