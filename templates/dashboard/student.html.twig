@@ -116,7 +116,55 @@
     </div>
 
     <div class="section">
-        <h2>📚 My Courses</h2>
+        <h2>🏫 My Classes</h2>
+        {% if inscriptions|length > 0 %}
+            {% for inscription in inscriptions %}
+                {% if inscription.classe %}
+                    <div class="course-card">
+                        <h3>{{ inscription.classe.Libelle }}</h3>
+                        <p><strong>Status:</strong> 
+                            <span class="badge {% if inscription.Status == 'Active' %}badge-success{% elseif inscription.Status == 'Pending' %}badge-warning{% else %}badge-info{% endif %}">
+                                {{ inscription.Status }}
+                            </span>
+                        </p>
+                        <p><strong>Registration Date:</strong> {{ inscription.Date ? inscription.Date|date('M d, Y') : 'N/A' }}</p>
+                        
+                        {% set classeCourses = [] %}
+                        {% for course in courses %}
+                            {% if course.classe and course.classe.id == inscription.classe.id %}
+                                {% set classeCourses = classeCourses|merge([course]) %}
+                            {% endif %}
+                        {% endfor %}
+                        
+                        {% if classeCourses|length > 0 %}
+                            <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #e0e0e0;">
+                                <strong style="color: #f5576c;">Courses in this class ({{ classeCourses|length }}):</strong>
+                                {% for course in classeCourses %}
+                                    <div style="margin-top: 10px; padding: 10px; background: white; border-radius: 5px;">
+                                        <strong>{{ course.Libelle }}</strong>
+                                        <p style="margin: 5px 0; font-size: 0.9em;">{{ course.Description }}</p>
+                                        <p style="margin: 5px 0; font-size: 0.85em; color: #999;">
+                                            {{ course.DateDebut ? course.DateDebut|date('M d, Y') : 'N/A' }} - 
+                                            {{ course.DateFin ? course.DateFin|date('M d, Y') : 'N/A' }}
+                                        </p>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <p style="margin-top: 15px; color: #999; font-style: italic;">No courses assigned to this class yet.</p>
+                        {% endif %}
+                    </div>
+                {% endif %}
+            {% endfor %}
+        {% else %}
+            <div class="empty-state">
+                <p>You are not enrolled in any class yet. Please contact the administrator.</p>
+            </div>
+        {% endif %}
+    </div>
+
+    <div class="section">
+        <h2>📚 All My Courses</h2>
         {% if courses|length > 0 %}
             {% for course in courses %}
                 <div class="course-card">
@@ -160,29 +208,6 @@
         {% endif %}
     </div>
 
-    <div class="section">
-        <h2>📋 My Registrations</h2>
-        {% if inscriptions|length > 0 %}
-            {% for inscription in inscriptions %}
-                <div class="course-card">
-                    <h3>Registration #{{ inscription.id }}</h3>
-                    <p><strong>Date:</strong> {{ inscription.Date|date('Y-m-d') }}</p>
-                    <p><strong>Status:</strong> 
-                        <span class="badge {% if inscription.Status == 'Active' %}badge-success{% elseif inscription.Status == 'Pending' %}badge-warning{% else %}badge-info{% endif %}">
-                            {{ inscription.Status }}
-                        </span>
-                    </p>
-                    {% if inscription.classe %}
-                        <p><strong>Class:</strong> {{ inscription.classe.Libelle }}</p>
-                    {% endif %}
-                </div>
-            {% endfor %}
-        {% else %}
-            <div class="empty-state">
-                <p>No registrations found.</p>
-            </div>
-        {% endif %}
-    </div>
 </div>
 {% endblock %}
 
