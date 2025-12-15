@@ -272,7 +272,7 @@
                                 <tr>
                                     <td>
                                         {% if examEntry.user %}
-                                            {{ examEntry.user.nom|default('N/A') }} {{ examEntry.user.prenom|default('') }}
+                                            {{ examEntry.user.name|default('N/A') }}
                                         {% else %}
                                             N/A
                                         {% endif %}

@@ -52,7 +52,7 @@
                                 </li>
                             {% endfor %}
                         </ul>
-                        <span style="color: #ccc;">{{ app.user.email }}</span>
+                        <span style="color: #ccc;">{{ app.user.name ?? app.user.email }}</span>
                         <a href="{{ path('app_logout') }}" style="color: white; text-decoration: none; background: #dc3545; padding: 8px 15px; border-radius: 5px;">Logout</a>
                     </div>
                 </div>

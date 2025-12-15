@@ -107,8 +107,7 @@
 <div class="dashboard-container">
     <div class="dashboard-header">
         <h1>👨‍🏫 Professor Dashboard</h1>
-        <p>Welcome, {{ app.user.email }}! Manage your courses and exams.</p>
-        <a href="{{ path('app_logout') }}" class="btn-logout">Logout</a>
+        <p>Welcome, {{ app.user.name ?? app.user.email }}! Manage your courses and exams.</p>
     </div>
 
     <div class="stats-grid">
