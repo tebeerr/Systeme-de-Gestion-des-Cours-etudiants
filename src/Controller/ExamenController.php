@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Examen;
 use App\Form\ExamenType;
 use App\Repository\ExamenRepository;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -47,10 +48,13 @@ final class ExamenController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_examen_show', methods: ['GET'], priority: -1)]
-    public function show(Examen $examen): Response
+    public function show(Examen $examen, ExamenRepository $examenRepository): Response
     {
+        $examStudents = $examenRepository->findStudentsForExam($examen);
+
         return $this->render('examen/show.html.twig', [
             'examen' => $examen,
+            'examStudents' => $examStudents,
         ]);
     }
 
@@ -72,6 +76,42 @@ final class ExamenController extends AbstractController
             'examen' => $examen,
             'form' => $form,
         ]);
+    }
+
+    #[Route('/{id}/add-grade', name: 'app_examen_add_grade', methods: ['POST'])]
+    public function addGrade(
+        Request $request,
+        Examen $examen,
+        UserRepository $userRepository,
+        EntityManagerInterface $entityManager
+    ): Response {
+        $email = $request->request->get('student_email');
+        $note = $request->request->get('note');
+
+        if (!$email || $note === null || $note === '') {
+            $this->addFlash('warning', 'Please provide both student email and note.');
+            return $this->redirectToRoute('app_examen_show', ['id' => $examen->getId()]);
+        }
+
+        $student = $userRepository->findOneBy(['email' => $email]);
+        if (!$student) {
+            $this->addFlash('warning', 'No student found with this email.');
+            return $this->redirectToRoute('app_examen_show', ['id' => $examen->getId()]);
+        }
+
+        $studentExam = new Examen();
+        $studentExam->setLibelle($examen->getLibelle());
+        $studentExam->setDateExamen($examen->getDateExamen());
+        $studentExam->setCours($examen->getCours());
+        $studentExam->setUser($student);
+        $studentExam->setNote((float) $note);
+
+        $entityManager->persist($studentExam);
+        $entityManager->flush();
+
+        $this->addFlash('success', 'Grade added for student '.$student->getEmail().'.');
+
+        return $this->redirectToRoute('app_examen_show', ['id' => $examen->getId()]);
     }
 
     #[Route('/{id}/delete', name: 'app_examen_delete', methods: ['POST'])]

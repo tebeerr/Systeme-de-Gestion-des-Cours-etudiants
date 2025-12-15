@@ -27,6 +27,8 @@ class InscriptionController extends AbstractController
         InscriptionRepository $inscriptionRepository,
         EntityManagerInterface $entityManager
     ): Response {
+        $selectedStudentId = $request->query->get('student_id');
+
         $students = $userRepository->createQueryBuilder('u')
             ->where('u.roles LIKE :role')
             ->setParameter('role', '%ROLE_STUDENT%')
@@ -78,6 +80,7 @@ class InscriptionController extends AbstractController
             'students' => $students,
             'classes' => $classes,
             'inscriptions' => $inscriptions,
+            'selectedStudentId' => $selectedStudentId,
         ]);
     }
 

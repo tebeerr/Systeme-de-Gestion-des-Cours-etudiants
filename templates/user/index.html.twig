@@ -185,7 +185,8 @@
                             <td>{{ student.email }}</td>
                             <td><span class="badge badge-student">Student</span></td>
                             <td>
-                                <a href="{{ path('app_user_show', {'id': student.id}) }}" class="btn-delete" style="background: #667eea;">View</a>
+                                <a href="{{ path('app_user_show', {'id': student.id}) }}" class="btn-delete" style="background: #667eea; margin-right: 8px;">View</a>
+                                <a href="{{ path('app_assign_students', {'student_id': student.id}) }}" class="btn-delete" style="background: #28a745;">Assign to Class</a>
                             </td>
                         </tr>
                     {% endfor %}

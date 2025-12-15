@@ -13,19 +13,45 @@
     </head>
     <body>
         {% if app.user %}
+            {% set navItems = [] %}
+            {% if 'ROLE_ADMIN' in app.user.roles %}
+                {% set navItems = [
+                    {'label': 'Dashboard', 'route': 'app_admin_dashboard'},
+                    {'label': 'Classes', 'route': 'app_classe_index'},
+                    {'label': 'Courses', 'route': 'app_cours_index'},
+                    {'label': 'Exams', 'route': 'app_examen_index'},
+                    {'label': 'Users', 'route': 'app_user_index'}
+                ] %}
+            {% elseif 'ROLE_PROFESSOR' in app.user.roles %}
+                {% set navItems = [
+                    {'label': 'Dashboard', 'route': 'app_professor_dashboard'},
+                    {'label': 'Classes', 'route': 'app_classe_index'},
+                    {'label': 'Courses', 'route': 'app_cours_index'},
+                    {'label': 'Exams', 'route': 'app_examen_index'}
+                ] %}
+            {% else %}
+                {% set navItems = [
+                    {'label': 'Dashboard', 'route': 'app_student_dashboard'},
+                    {'label': 'Courses', 'route': 'app_cours_index'},
+                    {'label': 'Exams', 'route': 'app_examen_index'}
+                ] %}
+            {% endif %}
+
             <nav style="background: #333; padding: 15px; margin-bottom: 20px;">
                 <div style="max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center;">
                     <div style="color: white; font-weight: bold;">
                         Course Management System
                     </div>
                     <div style="display: flex; gap: 20px; align-items: center;">
-                        {% if 'ROLE_ADMIN' in app.user.roles %}
-                            <a href="{{ path('app_admin_dashboard') }}" style="color: white; text-decoration: none;">Admin Dashboard</a>
-                        {% elseif 'ROLE_PROFESSOR' in app.user.roles %}
-                            <a href="{{ path('app_professor_dashboard') }}" style="color: white; text-decoration: none;">Professor Dashboard</a>
-                        {% else %}
-                            <a href="{{ path('app_student_dashboard') }}" style="color: white; text-decoration: none;">Student Dashboard</a>
-                        {% endif %}
+                        <ul style="display: flex; gap: 15px; list-style: none; margin: 0; padding: 0;">
+                            {% for item in navItems %}
+                                <li>
+                                    <a href="{{ path(item.route) }}" style="color: white; text-decoration: none; font-weight: 500;">
+                                        {{ item.label }}
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
                         <span style="color: #ccc;">{{ app.user.email }}</span>
                         <a href="{{ path('app_logout') }}" style="color: white; text-decoration: none; background: #dc3545; padding: 8px 15px; border-radius: 5px;">Logout</a>
                     </div>

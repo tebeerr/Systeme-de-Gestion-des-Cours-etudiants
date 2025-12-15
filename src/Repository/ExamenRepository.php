@@ -16,6 +16,24 @@ class ExamenRepository extends ServiceEntityRepository
         parent::__construct($registry, Examen::class);
     }
 
+    /**
+     * @return Examen[]
+     */
+    public function findStudentsForExam(Examen $exam): array
+    {
+        return $this->createQueryBuilder('e')
+            ->andWhere('e.cours = :cours')
+            ->andWhere('e.Libelle = :libelle')
+            ->andWhere('e.DateExamen = :dateExamen')
+            ->andWhere('e.user IS NOT NULL')
+            ->setParameter('cours', $exam->getCours())
+            ->setParameter('libelle', $exam->getLibelle())
+            ->setParameter('dateExamen', $exam->getDateExamen())
+            ->orderBy('e.id', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
     //    /**
     //     * @return Examen[] Returns an array of Examen objects
     //     */

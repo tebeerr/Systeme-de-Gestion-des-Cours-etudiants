@@ -166,6 +166,25 @@
             box-shadow: 0 6px 12px rgba(108, 117, 125, 0.3);
             color: white;
         }
+        .students-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        .students-table th,
+        .students-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #e0e0e0;
+            text-align: left;
+        }
+        .students-table th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #333;
+        }
+        .students-table tr:hover {
+            background: #f8f9fa;
+        }
         .status-badge {
             display: inline-block;
             padding: 8px 20px;
@@ -213,38 +232,91 @@
                 </div>
             </div>
 
-            {% if examen.user %}
-                <div class="student-info">
-                    <h3>👤 Student Information</h3>
-                    <p><strong>Name:</strong> {{ examen.user.nom|default('N/A') }} {{ examen.user.prenom|default('') }}</p>
-                    <p><strong>Email:</strong> {{ examen.user.email }}</p>
-                </div>
-            {% endif %}
+            <div class="section">
+                <h2 style="margin: 30px 0 15px 0; font-size: 1.4em; color: #333;">🎓 Students for this exam</h2>
 
-            <div class="grade-display">
-                <h2>Grade</h2>
-                <div class="grade-number">
-                    {{ examen.Note }}
-                    <span class="grade-max">/20</span>
-                </div>
+                <form method="post" action="{{ path('app_examen_add_grade', {'id': examen.id}) }}" style="margin-bottom: 20px; display: flex; gap: 10px; flex-wrap: wrap; align-items: flex-end;">
+                    <div style="flex: 1 1 250px;">
+                        <label for="student_email" style="font-weight: 600; color: #333;">Student Email</label>
+                        <input type="email" id="student_email" name="student_email" required class="form-control" placeholder="student@example.com">
+                    </div>
+                    <div style="flex: 0 0 150px;">
+                        <label for="note" style="font-weight: 600; color: #333;">Note (/20)</label>
+                        <input type="number" id="note" name="note" required min="0" max="20" step="0.1" class="form-control" placeholder="15.0">
+                    </div>
+                    <div style="flex: 0 0 auto;">
+                        <button type="submit" class="btn btn-edit" style="margin-top: 24px;">Add Grade</button>
+                    </div>
+                </form>
 
-                {% if examen.Note >= 10 %}
-                    <div class="status-badge status-passed">✓ Passed</div>
+                {% for message in app.flashes('success') %}
+                    <div class="alert alert-success">{{ message }}</div>
+                {% endfor %}
+                {% for message in app.flashes('warning') %}
+                    <div class="alert alert-warning">{{ message }}</div>
+                {% endfor %}
+
+                {% if examStudents is not empty %}
+                    <table class="students-table">
+                        <thead>
+                            <tr>
+                                <th>Student Name</th>
+                                <th>Email</th>
+                                <th>Grade</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for examEntry in examStudents %}
+                                <tr>
+                                    <td>
+                                        {% if examEntry.user %}
+                                            {{ examEntry.user.nom|default('N/A') }} {{ examEntry.user.prenom|default('') }}
+                                        {% else %}
+                                            N/A
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if examEntry.user %}
+                                            {{ examEntry.user.email }}
+                                        {% else %}
+                                            N/A
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if examEntry.Note is not null %}
+                                            {{ examEntry.Note }}/20
+                                        {% else %}
+                                            N/A
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if examEntry.Note is not null %}
+                                            {% if examEntry.Note >= 10 %}
+                                                <span class="status-badge status-passed">✓ Passed</span>
+                                            {% else %}
+                                                <span class="status-badge status-failed">✗ Failed</span>
+                                            {% endif %}
+                                        {% else %}
+                                            <span class="status-badge">Pending</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <a href="{{ path('app_examen_edit', {'id': examEntry.id}) }}" class="btn btn-edit" style="padding: 8px 15px;">
+                                            Edit
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
                 {% else %}
-                    <div class="status-badge status-failed">✗ Failed</div>
+                    <p style="color: #666; margin-top: 10px;">No students are linked to this exam yet.</p>
                 {% endif %}
             </div>
 
             <div class="action-buttons">
-                <a href="{{ path('app_examen_edit', {'id': examen.id}) }}" class="btn btn-edit">
-                    ✏️ Edit Exam
-                </a>
-
-                <form method="post" action="{{ path('app_examen_delete', {'id': examen.id}) }}" onsubmit="return confirm('Are you sure you want to delete this exam?');" style="margin: 0;">
-                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ examen.id) }}">
-                    <button type="submit" class="btn btn-delete">🗑️ Delete Exam</button>
-                </form>
-
                 <a href="{{ path('app_examen_index') }}" class="btn btn-back">
                     ← Back to List
                 </a>

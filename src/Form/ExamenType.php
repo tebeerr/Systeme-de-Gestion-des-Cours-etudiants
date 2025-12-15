@@ -24,22 +24,11 @@ class ExamenType extends AbstractType
                 'widget' => 'single_text',
                 'attr' => ['class' => 'form-control']
             ])
-            ->add('Note', null, [
-                'label' => 'Grade',
-                'attr' => ['class' => 'form-control', 'placeholder' => 'Enter grade (0-20)', 'step' => '0.1']
-            ])
             ->add('cours', EntityType::class, [
                 'class' => Cours::class,
                 'choice_label' => 'Libelle',
                 'label' => 'Course',
                 'placeholder' => 'Select a course',
-                'attr' => ['class' => 'form-control']
-            ])
-            ->add('user', EntityType::class, [
-                'class' => User::class,
-                'choice_label' => 'email',
-                'label' => 'Student',
-                'placeholder' => 'Select a student',
                 'attr' => ['class' => 'form-control']
             ])
         ;

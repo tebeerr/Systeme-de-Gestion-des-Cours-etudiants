@@ -176,7 +176,9 @@
                 <select name="student_id" id="student_id" class="form-control" required>
                     <option value="">Choose a student...</option>
                     {% for student in students %}
-                        <option value="{{ student.id }}">{{ student.email }}</option>
+                        <option value="{{ student.id }}" {% if selectedStudentId is defined and selectedStudentId == student.id %}selected{% endif %}>
+                            {{ student.email }}
+                        </option>
                     {% endfor %}
                 </select>
             </div>

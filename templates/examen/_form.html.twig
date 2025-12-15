@@ -1,4 +1,84 @@
+<style>
+    .form-row {
+        margin-bottom: 15px;
+    }
+    .form-row label {
+        font-weight: 600;
+        margin-bottom: 5px;
+        display: block;
+        color: #555;
+    }
+    .form-row input,
+    .form-row textarea,
+    .form-row select {
+        width: 100%;
+        padding: 10px 12px;
+        border-radius: 6px;
+        border: 1px solid #ced4da;
+        font-size: 14px;
+        transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .form-row input:focus,
+    .form-row textarea:focus,
+    .form-row select:focus {
+        outline: none;
+        border-color: #4facfe;
+        box-shadow: 0 0 0 2px rgba(79, 172, 254, 0.2);
+    }
+    .btn-primary {
+        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        color: white;
+        padding: 10px 25px;
+        border-radius: 6px;
+        border: none;
+        font-weight: 600;
+        cursor: pointer;
+        margin-top: 10px;
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .btn-primary:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(79, 172, 254, 0.3);
+        color: white;
+    }
+</style>
+
 {{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button class="btn">{{ button_label|default('Save') }}</button>
+    <div class="form-row">
+        {{ form_label(form.Libelle) }}
+        {{ form_widget(form.Libelle) }}
+        {{ form_errors(form.Libelle) }}
+    </div>
+
+    <div class="form-row">
+        {{ form_label(form.DateExamen) }}
+        {{ form_widget(form.DateExamen) }}
+        {{ form_errors(form.DateExamen) }}
+    </div>
+
+    {% if form.Note is defined %}
+        <div class="form-row">
+            {{ form_label(form.Note) }}
+            {{ form_widget(form.Note) }}
+            {{ form_errors(form.Note) }}
+        </div>
+    {% endif %}
+
+    {% if form.cours is defined %}
+        <div class="form-row">
+            {{ form_label(form.cours) }}
+            {{ form_widget(form.cours) }}
+            {{ form_errors(form.cours) }}
+        </div>
+    {% endif %}
+
+    {% if form.user is defined %}
+        <div class="form-row">
+            {{ form_label(form.user) }}
+            {{ form_widget(form.user) }}
+            {{ form_errors(form.user) }}
+        </div>
+    {% endif %}
+
+    <button class="btn-primary">{{ button_label|default('Save') }}</button>
 {{ form_end(form) }}

@@ -1,13 +1,87 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Edit Cours{% endblock %}
+{% block title %}Edit Course{% endblock %}
+
+{% block stylesheets %}
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            border-left: 4px solid #28a745;
+        }
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .card-header h1 {
+            margin: 0;
+            font-size: 2em;
+            color: #333;
+        }
+        .card-header span {
+            display: inline-block;
+            background: #f0f0f0;
+            color: #28a745;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+        .actions {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .btn {
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 14px;
+            border: none;
+            cursor: pointer;
+            display: inline-block;
+        }
+        .btn-back {
+            background: #6c757d;
+            color: white;
+        }
+        .btn-back:hover {
+            background: #5a6268;
+            color: white;
+        }
+    </style>
+{% endblock %}
 
 {% block body %}
-    <h1>Edit Cours</h1>
+<div class="container">
+    <div class="card">
+        <div class="card-header">
+            <h1>✏ Edit Course</h1>
+            <span>ID: {{ cour.id }}</span>
+        </div>
 
-    {{ include('cours/_form.html.twig', {'button_label': 'Update'}) }}
+        {{ include('cours/_form.html.twig', {'button_label': 'Update'}) }}
 
-    <a href="{{ path('app_cours_index') }}">back to list</a>
-
-    {{ include('cours/_delete_form.html.twig') }}
+        <div class="actions">
+            <a href="{{ path('app_cours_index') }}" class="btn btn-back">⬅ Back to Courses</a>
+            {{ include('cours/_delete_form.html.twig') }}
+        </div>
+    </div>
+</div>
 {% endblock %}

@@ -1,38 +1,143 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Cours{% endblock %}
+{% block title %}Course Details{% endblock %}
+
+{% block stylesheets %}
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            border-left: 4px solid #667eea;
+        }
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .card-header h1 {
+            margin: 0;
+            font-size: 2em;
+            color: #333;
+        }
+        .card-header span {
+            display: inline-block;
+            background: #f0f0f0;
+            color: #667eea;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+        .field-group {
+            margin-bottom: 15px;
+        }
+        .field-label {
+            font-weight: 600;
+            color: #555;
+            display: block;
+            margin-bottom: 5px;
+        }
+        .field-value {
+            color: #333;
+        }
+        .description-box {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+            white-space: pre-line;
+        }
+        .actions {
+            margin-top: 25px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .btn {
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 14px;
+            border: none;
+            cursor: pointer;
+            display: inline-block;
+        }
+        .btn-back {
+            background: #6c757d;
+            color: white;
+        }
+        .btn-back:hover {
+            background: #5a6268;
+            color: white;
+        }
+        .btn-edit {
+            background: #28a745;
+            color: white;
+        }
+        .btn-edit:hover {
+            background: #218838;
+            color: white;
+        }
+    </style>
+{% endblock %}
 
 {% block body %}
-    <h1>Cours</h1>
+<div class="container">
+    <div class="card">
+        <div class="card-header">
+            <h1>📘 {{ cour.Libelle }}</h1>
+            <span>ID: {{ cour.id }}</span>
+        </div>
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ cour.id }}</td>
-            </tr>
-            <tr>
-                <th>Libelle</th>
-                <td>{{ cour.Libelle }}</td>
-            </tr>
-            <tr>
-                <th>Description</th>
-                <td>{{ cour.Description }}</td>
-            </tr>
-            <tr>
-                <th>DateDebut</th>
-                <td>{{ cour.DateDebut ? cour.DateDebut|date('Y-m-d') : '' }}</td>
-            </tr>
-            <tr>
-                <th>DateFin</th>
-                <td>{{ cour.DateFin ? cour.DateFin|date('Y-m-d') : '' }}</td>
-            </tr>
-        </tbody>
-    </table>
+        <div class="field-group">
+            <span class="field-label">Description</span>
+            <div class="description-box">
+                {{ cour.Description }}
+            </div>
+        </div>
 
-    <a href="{{ path('app_cours_index') }}">back to list</a>
+        <div class="field-group">
+            <span class="field-label">Start Date</span>
+            <span class="field-value">
+                {{ cour.DateDebut ? cour.DateDebut|date('Y-m-d') : 'N/A' }}
+            </span>
+        </div>
 
-    <a href="{{ path('app_cours_edit', {'id': cour.id}) }}">edit</a>
+        <div class="field-group">
+            <span class="field-label">End Date</span>
+            <span class="field-value">
+                {{ cour.DateFin ? cour.DateFin|date('Y-m-d') : 'N/A' }}
+            </span>
+        </div>
 
-    {{ include('cours/_delete_form.html.twig') }}
+        {% if cour.classe %}
+            <div class="field-group">
+                <span class="field-label">Class</span>
+                <span class="field-value">
+                    {{ cour.classe.Libelle }}
+                </span>
+            </div>
+        {% endif %}
+
+        <div class="actions">
+            <a href="{{ path('app_cours_index') }}" class="btn btn-back">⬅ Back to Courses</a>
+            <a href="{{ path('app_cours_edit', {'id': cour.id}) }}" class="btn btn-edit">✏ Edit Course</a>
+            {{ include('cours/_delete_form.html.twig') }}
+        </div>
+    </div>
+</div>
 {% endblock %}

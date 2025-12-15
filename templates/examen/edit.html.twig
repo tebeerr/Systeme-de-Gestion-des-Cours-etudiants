@@ -1,13 +1,112 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Edit Examen{% endblock %}
+{% block title %}Edit Exam{% endblock %}
+
+{% block stylesheets %}
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .exam-edit-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .exam-edit-card {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            border-left: 4px solid #ffc107;
+        }
+        .exam-edit-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .exam-edit-header h1 {
+            margin: 0;
+            font-size: 2em;
+            color: #333;
+        }
+        .exam-badge {
+            display: inline-block;
+            background: #fff3cd;
+            color: #856404;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+        .exam-meta {
+            margin-bottom: 20px;
+            color: #555;
+            font-size: 0.95em;
+        }
+        .exam-meta span {
+            display: inline-block;
+            margin-right: 15px;
+        }
+        .exam-actions {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .btn {
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 14px;
+            border: none;
+            cursor: pointer;
+            display: inline-block;
+        }
+        .btn-back {
+            background: #6c757d;
+            color: white;
+        }
+        .btn-back:hover {
+            background: #5a6268;
+            color: white;
+        }
+        .btn-delete {
+            background: #dc3545;
+            color: white;
+        }
+        .btn-delete:hover {
+            background: #c82333;
+            color: white;
+        }
+    </style>
+{% endblock %}
 
 {% block body %}
-    <h1>Edit Examen</h1>
+<div class="exam-edit-container">
+    <div class="exam-edit-card">
+        <div class="exam-edit-header">
+            <h1>✏ Edit Exam</h1>
+            <span class="exam-badge">ID: {{ examen.id }}</span>
+        </div>
 
-    {{ include('examen/_form.html.twig', {'button_label': 'Update'}) }}
+        <div class="exam-meta">
+            <span><strong>Title:</strong> {{ examen.Libelle }}</span>
+            <span><strong>Date:</strong> {{ examen.DateExamen ? examen.DateExamen|date('Y-m-d') : 'N/A' }}</span>
+            {% if examen.cours %}
+                <span><strong>Course:</strong> {{ examen.cours.Libelle }}</span>
+            {% endif %}
+        </div>
 
-    <a href="{{ path('app_examen_index') }}">back to list</a>
+        {{ include('examen/_form.html.twig', {'button_label': 'Update'}) }}
 
-    {{ include('examen/_delete_form.html.twig') }}
+        <div class="exam-actions">
+            <a href="{{ path('app_examen_index') }}" class="btn btn-back">⬅ Back to Exams</a>
+            {{ include('examen/_delete_form.html.twig') }}
+        </div>
+    </div>
+</div>
 {% endblock %}
