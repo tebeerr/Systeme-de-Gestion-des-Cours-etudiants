@@ -25,15 +25,12 @@
             {% elseif 'ROLE_PROFESSOR' in app.user.roles %}
                 {% set navItems = [
                     {'label': 'Dashboard', 'route': 'app_professor_dashboard'},
-                    {'label': 'Classes', 'route': 'app_classe_index'},
                     {'label': 'Courses', 'route': 'app_cours_index'},
                     {'label': 'Exams', 'route': 'app_examen_index'}
                 ] %}
             {% else %}
                 {% set navItems = [
                     {'label': 'Dashboard', 'route': 'app_student_dashboard'},
-                    {'label': 'Courses', 'route': 'app_cours_index'},
-                    {'label': 'Exams', 'route': 'app_examen_index'}
                 ] %}
             {% endif %}
 
