@@ -78,6 +78,11 @@
     <h1>User Details</h1>
 
     <div class="info-group">
+        <label>Name:</label>
+        <span>{{ user.name ?? 'Not set' }}</span>
+    </div>
+
+    <div class="info-group">
         <label>Email:</label>
         <span>{{ user.email }}</span>
     </div>
@@ -102,7 +107,10 @@
         <span>{{ user.id }}</span>
     </div>
 
-    <a href="{{ path('app_user_index') }}" class="btn-back">← Back to Users List</a>
+    <div style="margin-top: 30px; display: flex; gap: 15px;">
+        <a href="{{ path('app_user_edit', {'id': user.id}) }}" class="btn-back" style="background: #ffc107; color: #333; padding: 10px 20px; border-radius: 5px; text-decoration: none;">✏️ Edit User</a>
+        <a href="{{ path('app_user_index') }}" class="btn-back">← Back to Users List</a>
+    </div>
 </div>
 {% endblock %}
 

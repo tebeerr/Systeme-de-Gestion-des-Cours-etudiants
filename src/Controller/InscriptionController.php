@@ -47,13 +47,26 @@ class InscriptionController extends AbstractController
                 $classe = $classeRepository->find($classeId);
 
                 if ($student && $classe) {
-                    // Check if inscription already exists
+                    // Check if inscription already exists for this specific class
                     $existingInscription = $inscriptionRepository->findOneBy([
                         'user' => $student,
                         'classe' => $classe
                     ]);
 
                     if (!$existingInscription) {
+                        // Find all existing inscriptions for this student (to remove from old classes)
+                        $oldInscriptions = $inscriptionRepository->findBy([
+                            'user' => $student
+                        ]);
+
+                        $oldClassNames = [];
+                        // Remove student from old classes
+                        foreach ($oldInscriptions as $oldInscription) {
+                            $oldClassNames[] = $oldInscription->getClasse()->getLibelle();
+                            $entityManager->remove($oldInscription);
+                        }
+
+                        // Create new inscription for the new class
                         $inscription = new Inscription();
                         $inscription->setUser($student);
                         $inscription->setClasse($classe);
@@ -63,7 +76,13 @@ class InscriptionController extends AbstractController
                         $entityManager->persist($inscription);
                         $entityManager->flush();
 
-                        $this->addFlash('success', "Student {$student->getEmail()} has been assigned to class {$classe->getLibelle()}!");
+                        // Build success message
+                        if (!empty($oldClassNames)) {
+                            $oldClassesList = implode(', ', $oldClassNames);
+                            $this->addFlash('success', "Student {$student->getEmail()} has been moved from class(es): {$oldClassesList} to class {$classe->getLibelle()}!");
+                        } else {
+                            $this->addFlash('success', "Student {$student->getEmail()} has been assigned to class {$classe->getLibelle()}!");
+                        }
                     } else {
                         $this->addFlash('warning', "Student {$student->getEmail()} is already assigned to class {$classe->getLibelle()}!");
                     }

@@ -20,7 +20,7 @@ class Examen
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTime $DateExamen = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     private ?float $Note = null;
 
     #[ORM\ManyToOne(inversedBy: 'examens')]
@@ -63,7 +63,7 @@ class Examen
         return $this->Note;
     }
 
-    public function setNote(float $Note): static
+    public function setNote(?float $Note): static
     {
         $this->Note = $Note;
 
